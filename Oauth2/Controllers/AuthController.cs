@@ -13,11 +13,12 @@ namespace Oauth2.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto registerDto, CancellationToken cancellationToken)
         {
-            AppUser appUser = new AppUser{
-                Email=registerDto.email,
-                firstName=registerDto.firstName,
-                lastName=registerDto.lastName,
-                UserName=registerDto.userName
+            AppUser appUser = new AppUser
+            {
+                Email = registerDto.email,
+                firstName = registerDto.firstName,
+                lastName = registerDto.lastName,
+                UserName = registerDto.userName
             };
             IdentityResult result = await userManager.CreateAsync(appUser, registerDto.password);
 
@@ -25,7 +26,18 @@ namespace Oauth2.Controllers
             {
                 return Ok();
             }
-            return BadRequest(result.Errors);
+            return BadRequest(new { message = result.Errors.Select(x => x.Description) });
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(ChangePasswordDto changePasswordDto, CancellationToken cancellationToken)
+        {
+            AppUser? appUser = await userManager.FindByIdAsync(changePasswordDto.userId.ToString());
+
+            if (appUser == null) 
+            {
+                return BadRequest(new { message = "User not found" });
+            }
+            IdentityResult result = await userManager.ChangePasswordAsync(appUser, changePasswordDto.currentPassword, changePasswordDto.newPassword);
         }
     }
 }
