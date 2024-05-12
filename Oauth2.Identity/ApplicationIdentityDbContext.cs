@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Oauth2.Identity
 {
-    public sealed class ApplicationIdentityDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
+    public sealed class ApplicationIdentityDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public ApplicationIdentityDbContext(DbContextOptions options) : base(options)
         {
