@@ -33,11 +33,16 @@ namespace Oauth2.Controllers
         {
             AppUser? appUser = await userManager.FindByIdAsync(changePasswordDto.userId.ToString());
 
-            if (appUser == null) 
+            if (appUser == null)
             {
                 return BadRequest(new { message = "User not found" });
             }
             IdentityResult result = await userManager.ChangePasswordAsync(appUser, changePasswordDto.currentPassword, changePasswordDto.newPassword);
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Password updated" });
+            }
+            return NoContent();
         }
     }
 }
